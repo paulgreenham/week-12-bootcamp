@@ -7,25 +7,27 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
+      username: "",
       message: "",
-      socket: openSocket('http://localhost:8000'),
+      socket: openSocket('/'),
       messages: []
     }    
   }
 
-  changeMessage = event => this.setState({message: event.target.value})
+  changeName = event => this.setState({ username: event.target.value })
+
+  changeMessage = event => this.setState({ message: event.target.value })
 
   updateMessages = () => {
     this.state.socket.on('msg-from-server', message => {
       let messageList = [...this.state.messages]
       messageList.push(message)
-      this.setState({messages: messageList})
+      this.setState({ messages: messageList })
     })
   }
 
   sendMessage = () => {
-    this.state.socket.emit('msg-to-server', this.state.message)
-    // this.updateMessages()
+    this.state.socket.emit('msg-to-server', { name: this.state.username, message: this.state.message })
   }
 
   componentDidMount() {
@@ -36,9 +38,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <input type="text" value={this.state.username} onChange={this.changeName} placeholder="enter your name"/>
         <input type="text" value={this.state.message} onChange={this.changeMessage}/>
         <button onClick={this.sendMessage}>Post</button>
-        {this.state.messages.map((m, i) => <div key={i}>{m}</div>)}
+        {this.state.messages.map((m, i) => <div key={i}>{m.name}: {m.message}</div>)}
       </div>
     )
   }
