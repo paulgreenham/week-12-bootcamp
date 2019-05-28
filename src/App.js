@@ -12,7 +12,7 @@ class App extends Component {
       joinSelection: "",
       inRoom: false,
       message: "",
-      socket: openSocket('http://localhost:8000'),
+      socket: openSocket('/'),
       messages: [],
       rooms: []
     }    
